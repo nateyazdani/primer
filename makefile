@@ -2,8 +2,7 @@ install all:
         sudo cc play.c -o /usr/bin/play
         sudo chown root:users /usr/bin/play
         sudo chmod +rxs /usr/bin/play
-        sudo echo "w /sys/kernel/debug/vgaswitcheroo/switch - - - - OFF" \
-                                 > /usr/lib/tmpfiles.d/disable-discrete-gpu.conf
+        sudo mv disable-discrete-gpu.conf /usr/lib/tmpfiles.d/
 
 uninstall clean:
         sudo rm /usr/bin/play
