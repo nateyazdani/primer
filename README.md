@@ -3,7 +3,7 @@ primer
 
 A nifty little tool to automate hybrid graphics under Linux (using the open-source drivers &amp; systemd)
 
-    In and of itself primer does very little; all it does is make utilizing the leading hybrid GPU switching
+  In and of itself primer does very little; all it does is make utilizing the leading hybrid GPU switching
 technology under Linux (PRIME) much easier.  This ONLY works when both GPUs are running the open-source drivers.  This is
 because the proprietary ones don't implement support for PRIME/DMA-BUF (though NVIDIA is trying to add it to theirs.).
 After primer is installed, your discrete GPU will be automatically powered down after boot in order to save power.  If you
