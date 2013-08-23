@@ -1,7 +1,7 @@
 primer
 ======
 
-A nifty little tool to automate hybrid graphics under Linux (requires the open-source/Gallium3D drivers &amp; systemd)
+A nifty little tool to automate hybrid graphics under Linux (using the open-source drivers &amp; systemd)
 
         In and of itself primer does very little; all it does is make utilizing the leading hybrid GPU switching
 technology under Linux (PRIME) much easier.  This ONLY works when both GPUs are running the open-source drivers.  This is
