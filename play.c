@@ -7,33 +7,51 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(int argc, char **argv, char **envp)
+static int fd, pid;
+const char off[] = "OFF", on[] = "ON";
+
+static void quit(int code)
+{
+	if (pid)
+		kill(SIGKILL, pid);
+	if (write(fd, off, sizeof off) != sizeof off)
+		fprintf(stderr, "Couldn't turn off discrete GPU");
+	close(fd);
+	exit(code ? code : errno);
+}
+
+void main(int argc, char **argv)
 {
 	if (argc < 2)
 		exit(0);
 
-	int fd = open("/sys/kernel/debug/vgaswitcheroo/switch", O_WRONLY,
+	signal(SIGINT, quit);
+
+	fd = open("/sys/kernel/debug/vgaswitcheroo/switch", O_WRONLY, O_SYNC,
 								O_CLOEXEC);
-	if (!fd) {
+	if (fd == -1) {
 		if (getuid() != 0)
 			printf("This program needs to be run as superuser.");
 		else
-			printf("vgaswitheroo is unavailable.");
-		exit(0);
+			fprintf(stderr, "vgaswitheroo unavailable.");
+		exit(errno);
 	}
-	write(fd, "ON", sizeof("ON"));
-	fsync(fd);
+	if (write(fd, on, sizeof on) != sizeof on) {
+		fprintf(stderr, "Couldn't turn on discrete GPU");
+		quit(errno);
+	}
 
 	putenv("DRI_PRIME=1");
 
-	if (!fork())
+	if (!(pid = fork()))
 		execvp(argv[1], &argv[1]);
 
 	wait(NULL);
-	write(fd, "OFF", sizeof("OFF"));
-	close(fd);
-	exit(0);
+	pid = 0;
+	quit(0);
 }
